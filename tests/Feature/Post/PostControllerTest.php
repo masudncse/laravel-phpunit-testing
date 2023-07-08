@@ -3,10 +3,7 @@
 
 namespace Post;
 
-
 use App\Models\Post;
-use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,14 +13,7 @@ class PostControllerTest extends TestCase
 
     public function test_post_index_page_is_displayed()
     {
-        $user = User::factory()->create();
-
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $this->assertAuthenticated();
+        $this->checkAuthentication();
 
         $response = $this->get(route('posts.index'));
 
@@ -32,14 +22,7 @@ class PostControllerTest extends TestCase
 
     public function test_post_create_page_is_displayed()
     {
-        $user = User::factory()->create();
-
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $this->assertAuthenticated();
+        $this->checkAuthentication();
 
         $response = $this->get(route('posts.create'));
         $response->assertStatus(200);
@@ -47,14 +30,7 @@ class PostControllerTest extends TestCase
 
     public function test_post_create_and_redirect_to_create_page()
     {
-        $user = User::factory()->create();
-
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $this->assertAuthenticated();
+        $this->checkAuthentication();
 
         $response = $this->from(route('posts.create'))->post(route('posts.store'), [
             'title' => 'Title 1',
@@ -70,19 +46,14 @@ class PostControllerTest extends TestCase
 
     public function test_post_delete_and_redirect_to_index_page()
     {
-        $user = User::factory()->create();
+        $this->checkAuthentication();
 
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $this->assertAuthenticated();
-
-        $response = $this->from(route('posts.create'))->post(route('posts.store'), [
+        $response = $this->post(route('posts.store'), [
             'title' => 'Title 1',
             'description' => 'Description 1',
         ]);
+
+        $response->assertStatus(302);
 
         $post = Post::first();
 
