@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Post;
+namespace Tests\Feature\Post;
 
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
